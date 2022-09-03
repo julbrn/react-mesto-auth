@@ -17,6 +17,7 @@ import Register from "./Register";
 import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute";
 import * as auth from "../utils/auth.js";
+import InfoTooltip from "./InfoTooltip";
 
 function App() {
   const history = useHistory();
@@ -24,6 +25,8 @@ function App() {
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false)
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false)
   const [isConfirmPopupOpen, setConfirmPopupOpen] = useState(false)
+  const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
+  const [isSuccessful, setSuccessful] = useState(false);
   const [selectedCard, setSelectedCard] = useState(null)
   const [cards, setCards] = useState([])
   const [card, setCard] = useState({})
@@ -61,7 +64,7 @@ function App() {
                 closeAllPopups();
             });
     }
-  const isOpen = isEditProfilePopupOpen || isAddPlacePopupOpen || isEditAvatarPopupOpen || selectedCard || isConfirmPopupOpen;
+  const isOpen = isEditProfilePopupOpen || isAddPlacePopupOpen || isEditAvatarPopupOpen || selectedCard || isConfirmPopupOpen || isInfoTooltipOpen;
   useEffect(() => {
       if (loggedIn) {
         Promise.all([api.getUserInfo(), api.downloadInitialCards()])
@@ -96,7 +99,7 @@ function App() {
     }
   function handleAddPlaceClick() {setAddPlacePopupOpen(true);
   }
-  function closeAllPopups() {setEditProfilePopupOpen(false);setAddPlacePopupOpen(false);setEditAvatarPopupOpen(false);setSelectedCard(null);setConfirmPopupOpen(false)
+  function closeAllPopups() {setEditProfilePopupOpen(false);setAddPlacePopupOpen(false);setEditAvatarPopupOpen(false);setSelectedCard(null);setConfirmPopupOpen(false);setInfoTooltipOpen(false);
   }
   function handleCardClick(card) {
       setSelectedCard(card);
@@ -151,11 +154,17 @@ function App() {
         auth
             .register(password, email)
             .then(() => {
-                 history.push('/sign-in');
+                setSuccessful(true);
+                history.push('/sign-in');
                 })
 
             .catch((err) => {
+                setSuccessful(false);
                 console.log(err);
+                setInfoTooltipOpen(true)
+            })
+            .finally(() => {
+                setInfoTooltipOpen(true)
             })
     }
 
@@ -202,6 +211,11 @@ function App() {
           onClose={closeAllPopups}>
       </ImagePopup>
           <DeleteConfirmationPopup isOpen={isConfirmPopupOpen} onClose={closeAllPopups} onSubmit={handleCardDelete} card={card}/>
+      <InfoTooltip
+           isOpen={isInfoTooltipOpen}
+           isSuccessful={isSuccessful}
+           onClose={closeAllPopups}
+      />
       </div>
       </CurrentUserContext.Provider>
       </BrowserRouter>)
