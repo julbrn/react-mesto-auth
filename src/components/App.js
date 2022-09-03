@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {BrowserRouter, Route, Switch, Redirect, useHistory} from "react-router-dom";
 import '../index.css';
 import Header from "./Header";
 import Main from "./Main";
@@ -12,8 +13,13 @@ import EditProfilePopup from "./EditProfilePopup";
 import EditAvatarPopup from "./EditAvatarPopup";
 import AddPlacePopup from "./AddPlacePopup";
 import DeleteConfirmationPopup from "./DeleteConfirmationPopup";
+import Register from "./Register";
+import Login from "./Login";
+import ProtectedRoute from "./ProtectedRoute";
+import * as auth from "../utils/auth.js";
 
 function App() {
+  const history = useHistory();
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false)
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false)
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false)
@@ -27,6 +33,7 @@ function App() {
         avatar: '',
     });
   const [isLoading, setIsLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
   }
@@ -56,6 +63,7 @@ function App() {
     }
   const isOpen = isEditProfilePopupOpen || isAddPlacePopupOpen || isEditAvatarPopupOpen || selectedCard || isConfirmPopupOpen;
   useEffect(() => {
+      if (loggedIn) {
         Promise.all([api.getUserInfo(), api.downloadInitialCards()])
             .then(([userData, cardsData]) => {
                 setCurrentUser(userData);
@@ -64,7 +72,7 @@ function App() {
             .catch((err) => {
                 console.log(err);
             });
-    }, []);
+    }}, [loggedIn]);
 
   useEffect(() => {
       function handleEscapeClose(event) {
@@ -81,6 +89,7 @@ function App() {
   }, [isOpen])
 
 
+
   function handleEditProfileClick() {setEditProfilePopupOpen(true);
   }
   function handleDeleteBtnClick(card) {setConfirmPopupOpen(true);  setCard(card);
@@ -93,9 +102,9 @@ function App() {
       setSelectedCard(card);
   }
 
-  function handleUpdateUser(inputdata) {
+  function handleUpdateUser(inputData) {
       setIsLoading(true)
-      api.uploadUserInfo(inputdata)
+      api.uploadUserInfo(inputData)
           .then(user => {
               setCurrentUser(user);
               setEditProfilePopupOpen(false);
@@ -137,10 +146,38 @@ function App() {
                 setIsLoading(false)//
             })
     }
+    function handleRegister(password, email) {
+        setIsLoading(true);
+        auth
+            .register(password, email)
+            .then(() => {
+                 history.push('/sign-in');
+                })
 
-  return (
+            .catch((err) => {
+                console.log(err);
+            })
+    }
+
+
+    return (
+      <BrowserRouter>
       <CurrentUserContext.Provider value={currentUser}>
-      <div className="page"><Header/><Main
+      <div className="page">
+          <Header/>
+          <Switch>
+              <Route path="/sign-up">
+                  <Register
+                   onRegister={handleRegister}
+                  />
+              </Route>
+              <Route path="/sign-in">
+                  <Login
+
+                  />
+              </Route>
+              <ProtectedRoute  exact path="/"
+          loggedIn={loggedIn}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
@@ -149,7 +186,10 @@ function App() {
           setCards={setCards}
           onCardLike={handleCardLike}
           onCardDelete={handleDeleteBtnClick}
-      /><Footer/>
+          component={Main}
+      />
+          </Switch>
+              <Footer/>
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} isLoading={isLoading} loadingText="Сохранение..."/>
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}  onUpdateAvatar={handleUpdateAvatar} isLoading={isLoading} loadingText="Сохранение..."/>
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} isLoading={isLoading} loadingText="Добавление..."/>
@@ -163,7 +203,8 @@ function App() {
       </ImagePopup>
           <DeleteConfirmationPopup isOpen={isConfirmPopupOpen} onClose={closeAllPopups} onSubmit={handleCardDelete} card={card}/>
       </div>
-      </CurrentUserContext.Provider>);
+      </CurrentUserContext.Provider>
+      </BrowserRouter>)
   }
 export default App;
 
