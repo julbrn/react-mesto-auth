@@ -1,19 +1,28 @@
 export const BASE_URL = 'https://auth.nomoreparties.co';
-function checkServerResponse(res) {
-    if (res.ok) {
-        return res.json();
-    }
-    return Promise.reject(`Ошибка: ${res.status}`);
+const server_errors = {
+    400: "Некорректно заполнено одно из полей"
 }
 
-export function register(password, email) {
+export const register = (email, password) => {
     return fetch(`${BASE_URL}/signup`, {
         method: 'POST',
         headers: {
-           // 'Accept': 'application/json',
+            'Accept': 'application/json',
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({password, email})
+        body: JSON.stringify({email, password})
     })
-        .then(checkServerResponse)
+        .then((response) => {
+            try {
+                if (response.status === 200){
+                    return response.json();
+                }
+            } catch(e){
+                return (e)
+            }
+        })
+        .then((res) => {
+            return res;
+        })
+        .catch((err) => console.log(err));
 };

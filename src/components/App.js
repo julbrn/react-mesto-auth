@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {BrowserRouter, Route, Switch, Redirect, useHistory} from "react-router-dom";
+import {Route, Switch, Redirect, useHistory} from "react-router-dom";
 import '../index.css';
 import Header from "./Header";
 import Main from "./Main";
@@ -20,7 +20,7 @@ import * as auth from "../utils/auth.js";
 import InfoTooltip from "./InfoTooltip";
 
 function App() {
-  const history = useHistory();
+  let history = useHistory();
   const [isEditProfilePopupOpen, setEditProfilePopupOpen] = useState(false)
   const [isAddPlacePopupOpen, setAddPlacePopupOpen] = useState(false)
   const [isEditAvatarPopupOpen, setEditAvatarPopupOpen] = useState(false)
@@ -149,10 +149,10 @@ function App() {
                 setIsLoading(false)//
             })
     }
-    function handleRegister(password, email) {
+    function handleRegister(newUser) {
         setIsLoading(true);
         auth
-            .register(password, email)
+            .register(newUser.email, newUser.password)
             .then(() => {
                 setSuccessful(true);
                 history.push('/sign-in');
@@ -170,7 +170,6 @@ function App() {
 
 
     return (
-      <BrowserRouter>
       <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
           <Header/>
@@ -217,8 +216,7 @@ function App() {
            onClose={closeAllPopups}
       />
       </div>
-      </CurrentUserContext.Provider>
-      </BrowserRouter>)
+      </CurrentUserContext.Provider>)
   }
 export default App;
 
