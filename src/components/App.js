@@ -27,6 +27,7 @@ function App() {
   const [isConfirmPopupOpen, setConfirmPopupOpen] = useState(false)
   const [isInfoTooltipOpen, setInfoTooltipOpen] = useState(false);
   const [isSuccessful, setSuccessful] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
   const [selectedCard, setSelectedCard] = useState(null)
   const [cards, setCards] = useState([])
   const [card, setCard] = useState({})
@@ -168,34 +169,75 @@ function App() {
             })
     }
 
+    function handleLogin(user) {
+        auth
+            .signIn(user.email, user.password)
+            .then((data) => {
+                setLoggedIn(true);
+                localStorage.setItem("jwt", data.token);
+                setUserEmail(user.email);
+                history.push("/");
+                console.log(data.token)
+                })
+            .catch((err) => {
+                // запускается, если пользователь не найден
+                setInfoTooltipOpen(true);
+                console.log(err);
+            })
+    }
+
+    const tokenCheck = () => {
+        const token = localStorage.getItem("jwt");
+        if (token) {
+            auth.getProfile(token)
+                .then((res) => {
+                    if (res.data) {
+                        setUserEmail(res.data.email);
+                        setLoggedIn(true);
+                    }
+                })
+                .catch(err => console.log(err));
+        }
+    }
+
+    /*useEffect(() => {
+        loggedIn ? history.push("/") : history.push("/sign-in")
+        // eslint-disable-next-line
+    }, [loggedIn]);*/
+
+    /** Проверка токена, получение email */
+    /*useEffect(() => {
+        tokenCheck();
+    }, []);*/
+
 
     return (
       <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
           <Header/>
           <Switch>
-              <Route path="/sign-up">
+              <ProtectedRoute  exact path="/"
+                               loggedIn={loggedIn}
+                               onEditProfile={handleEditProfileClick}
+                               onAddPlace={handleAddPlaceClick}
+                               onEditAvatar={handleEditAvatarClick}
+                               onCardClick={handleCardClick}
+                               cards={cards}
+                               setCards={setCards}
+                               onCardLike={handleCardLike}
+                               onCardDelete={handleDeleteBtnClick}
+                               component={Main}
+              />
+              <Route exact path="/sign-up">
                   <Register
                    onRegister={handleRegister}
                   />
               </Route>
-              <Route path="/sign-in">
-                  <Login
-
+              <Route exact path="/sign-in">
+                  <Login  handleLogin={handleLogin} tokenCheck={tokenCheck}
                   />
               </Route>
-              <ProtectedRoute  exact path="/"
-          loggedIn={loggedIn}
-          onEditProfile={handleEditProfileClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditAvatar={handleEditAvatarClick}
-          onCardClick={handleCardClick}
-          cards={cards}
-          setCards={setCards}
-          onCardLike={handleCardLike}
-          onCardDelete={handleDeleteBtnClick}
-          component={Main}
-      />
+
           </Switch>
               <Footer/>
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} isLoading={isLoading} loadingText="Сохранение..."/>
