@@ -1,5 +1,6 @@
 import {useContext, useEffect, useRef} from 'react';
 import Input from "./Input";
+import Popup from "./Popup";
 import PopupWithForm from "./PopupWithForm";
 import {CurrentUserContext} from "../contexts/CurrentUserContext";
 
@@ -17,12 +18,17 @@ function EditAvatarPopup({isOpen, onClose, onUpdateAvatar, isLoading, loadingTex
             avatar: avatarRef.current.value,
         });
     }
-    return (<PopupWithForm
-    name='edit-avatar'
+    return (
+        <Popup
+            popupModifier="edit-avatar"
+            containerModifier="edit-avatar"
+            isOpen={isOpen}
+            onClose={onClose}
+        >
+    <PopupWithForm
+    popupModifier="edit-avatar"
     title='Обновить аватар'
     buttonText='Сохранить'
-    onClose = {onClose}
-    isOpen={isOpen}
     onSubmit={handleSubmit}
     isLoading={isLoading}
     loadingText={loadingText}>
@@ -33,7 +39,8 @@ function EditAvatarPopup({isOpen, onClose, onUpdateAvatar, isLoading, loadingTex
         id="avatarUrl-input"
         avatarRef={avatarRef}
     />
-</PopupWithForm>)
+</PopupWithForm>
+        </Popup>)
 }
 
 export default EditAvatarPopup;

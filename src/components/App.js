@@ -18,6 +18,7 @@ import Login from "./Login";
 import ProtectedRoute from "./ProtectedRoute";
 import * as auth from "../utils/auth.js";
 import InfoTooltip from "./InfoTooltip";
+import Popup from "./Popup";
 
 function App() {
   let history = useHistory();
@@ -177,7 +178,6 @@ function App() {
                 localStorage.setItem("jwt", data.token);
                 setUserEmail(user.email);
                 history.push("/");
-                console.log(data.token)
                 })
             .catch((err) => {
                 // запускается, если пользователь не найден
@@ -247,16 +247,18 @@ function App() {
           name='deletion-confirmation'
           title='Вы уверены?'
           buttonText='Да'>
-      </PopupWithForm><ImagePopup
+      </PopupWithForm>
+          <Popup popupModifier="zoom-image" containerModifier="zoom-image" onClose={closeAllPopups} isOpen={selectedCard}>
+          <ImagePopup
           card={selectedCard}
-          onClose={closeAllPopups}>
-      </ImagePopup>
+          >
+      </ImagePopup></Popup>
           <DeleteConfirmationPopup isOpen={isConfirmPopupOpen} onClose={closeAllPopups} onSubmit={handleCardDelete} card={card}/>
+          <Popup containerModifier="auth" onClose={closeAllPopups} isOpen={isInfoTooltipOpen}>
       <InfoTooltip
-           isOpen={isInfoTooltipOpen}
            isSuccessful={isSuccessful}
-           onClose={closeAllPopups}
       />
+          </Popup>
       </div>
       </CurrentUserContext.Provider>)
   }

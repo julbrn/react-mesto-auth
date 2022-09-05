@@ -1,7 +1,12 @@
 import {BASE_URL} from "./constants";
-const server_errors = {
-    400: "Некорректно заполнено одно из полей",
-    401: "Пользователь с email не найден"
+
+const checkServerResponse = (res) => {
+    if(!res.ok) {
+        return res.text().then(text => { throw new Error(text.split(':')[1].split('}')[0])})
+    }
+    else {
+        return res.json();
+    }
 }
 
 export const register = (email, password) => {
@@ -12,19 +17,8 @@ export const register = (email, password) => {
         },
         body: JSON.stringify({email, password})
     })
-        .then((response) => {
-            try {
-                if (response.status === 200){
-                    return response.json();
-                }
-            } catch(e){
-                return (e)
-            }
-        })
-        .then((res) => {
-            return res;
-        })
-        .catch((err) => console.log(err));
+        .then((res) => checkServerResponse(res))
+
 };
 
 export const signIn = (email, password) => {
@@ -35,14 +29,7 @@ export const signIn = (email, password) => {
         },
         body: JSON.stringify({email, password})
     })
-        .then((response => response.json()))
-        .then((data) => {
-            if (data.token){
-                localStorage.setItem('token', data.token);
-                return data;
-            }
-        })
-        .catch(err => console.log(err))
+        .then((res) => checkServerResponse(res))
 };
 
 export function getProfile(token) {

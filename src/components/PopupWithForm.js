@@ -1,12 +1,8 @@
 import React from 'react';
 
-function PopupWithForm({name, isOpen, onClose, onSubmit, title, children, isLoading, loadingText, buttonText}) {
+function PopupWithForm({popupModifier, onSubmit, title, children, isLoading, loadingText, buttonText}) {
     return (
-        <div className={`popup popup_type_${name} ${isOpen && 'popup_opened'}`} onClick={onClose}>
-            <div className={`popup__container popup__container_type_${name}`} onClick={(event) => {event.stopPropagation()}}>
-                <button onClick={onClose} type="button" aria-label="Close"
-                 className="popup__close"/>
-                <form className="popup__form" name={`${name}-form`} onSubmit={onSubmit}>
+                <form className="popup__form" name={`${popupModifier}-form`} onSubmit={onSubmit}>
                     <fieldset className="popup__fieldset">
                         <legend className="popup__title">{title}</legend>
                         {children}
@@ -15,8 +11,6 @@ function PopupWithForm({name, isOpen, onClose, onSubmit, title, children, isLoad
                         </button>
                     </fieldset>
                 </form>
-            </div>
-        </div>
     );
 }
 
