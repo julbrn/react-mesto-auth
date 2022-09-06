@@ -2,7 +2,7 @@ import React from 'react';
 import PopupWithForm from "./PopupWithForm";
 import Popup from "./Popup";
 
-function DeleteConfirmationPopup({card, isOpen, onClose, onSubmit}) {
+function DeleteConfirmationPopup({isOpen, isLoading, loadingText, onClose, onSubmit, card}) {
     function handleYesClick(e) {
         e.preventDefault();
         onSubmit(card);
@@ -19,6 +19,8 @@ function DeleteConfirmationPopup({card, isOpen, onClose, onSubmit}) {
             title="Вы уверены?"
             buttonText="Да"
             onSubmit={handleYesClick}
+            isLoading={isLoading}
+            loadingText={loadingText}
         >
         </PopupWithForm>
         </Popup>

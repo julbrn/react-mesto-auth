@@ -2,8 +2,8 @@ import {BASE_URL} from "./constants";
 
 const checkServerResponse = (res) => {
     if(!res.ok) {
-        return res.text().then(text => { throw new Error(text.split(':')[1].split('}')[0])})
-    }
+        return res.text().then(text => { throw new Error(`Ошибка ${res.status}: ${text.split(':')[1].split('}')[0]}`)
+    })}
     else {
         return res.json();
     }

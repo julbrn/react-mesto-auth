@@ -19,6 +19,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import * as auth from "../utils/auth.js";
 import InfoTooltip from "./InfoTooltip";
 import Popup from "./Popup";
+import PageNotFound from "./PageNotFound";
 
 function App() {
   let history = useHistory();
@@ -55,6 +56,7 @@ function App() {
             });
     }
     function handleCardDelete(card) {
+        setIsLoading(true)
         api.deleteCardfromServer(card._id)
             .then(() => {
                 setCards((state) => state.filter((c) => c._id !== card._id && c));
@@ -63,6 +65,7 @@ function App() {
                 console.log(`${err}`);
             })
             .finally(() => {
+                setIsLoading(false)
                 closeAllPopups();
             });
     }
@@ -200,21 +203,28 @@ function App() {
         }
     }
 
-    /*useEffect(() => {
+    const handleSignOut = () => {
+        if(localStorage.getItem('token')) {
+            localStorage.removeItem('token')
+            setLoggedIn(false);
+            setUserEmail('');
+        }
+    }
+/*
+    useEffect(() => {
         loggedIn ? history.push("/") : history.push("/sign-in")
-        // eslint-disable-next-line
-    }, [loggedIn]);*/
+    }, [loggedIn]);
+*/
 
-    /** Проверка токена, получение email */
-    /*useEffect(() => {
+    useEffect(() => {
         tokenCheck();
-    }, []);*/
+    }, []);
 
 
     return (
       <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-          <Header/>
+          <Header  linkTitle="Выйти" link="/sign-in" onSignOut={handleSignOut} email={userEmail} loggedIn={loggedIn}/>
           <Switch>
               <ProtectedRoute  exact path="/"
                                loggedIn={loggedIn}
@@ -228,32 +238,29 @@ function App() {
                                onCardDelete={handleDeleteBtnClick}
                                component={Main}
               />
-              <Route exact path="/sign-up">
+              <Route path="/sign-up">
                   <Register
                    onRegister={handleRegister}
                   />
               </Route>
-              <Route exact path="/sign-in">
+              <Route path="/sign-in">
                   <Login  handleLogin={handleLogin} tokenCheck={tokenCheck}
                   />
               </Route>
-
+              <Route path="*">
+                  <PageNotFound />
+              </Route>
           </Switch>
               <Footer/>
           <EditProfilePopup isOpen={isEditProfilePopupOpen} onClose={closeAllPopups} onUpdateUser={handleUpdateUser} isLoading={isLoading} loadingText="Сохранение..."/>
           <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups}  onUpdateAvatar={handleUpdateAvatar} isLoading={isLoading} loadingText="Сохранение..."/>
           <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlace} isLoading={isLoading} loadingText="Добавление..."/>
-          <PopupWithForm
-          name='deletion-confirmation'
-          title='Вы уверены?'
-          buttonText='Да'>
-      </PopupWithForm>
           <Popup popupModifier="zoom-image" containerModifier="zoom-image" onClose={closeAllPopups} isOpen={selectedCard}>
           <ImagePopup
           card={selectedCard}
           >
       </ImagePopup></Popup>
-          <DeleteConfirmationPopup isOpen={isConfirmPopupOpen} onClose={closeAllPopups} onSubmit={handleCardDelete} card={card}/>
+          <DeleteConfirmationPopup isOpen={isConfirmPopupOpen} isLoading={isLoading} loadingText="Удаление..." onClose={closeAllPopups} onSubmit={handleCardDelete} card={card}/>
           <Popup containerModifier="auth" onClose={closeAllPopups} isOpen={isInfoTooltipOpen}>
       <InfoTooltip
            isSuccessful={isSuccessful}
