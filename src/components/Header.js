@@ -6,7 +6,7 @@ function Header({onSignOut, email}) {
     const location = useLocation();
     return (
         <header className="header">
-            <a href="src/components/App#" className="header__logo" target="_blank"
+            <a href="#" className="header__logo" target="_blank"
             ><img
                 className="header__logo-img"
                 src={logo}

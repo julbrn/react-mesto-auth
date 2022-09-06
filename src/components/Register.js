@@ -46,7 +46,7 @@ function Register({onRegister, isLoading, loadingText, buttonText}) {
                     {isLoading ? loadingText : buttonText}
                 </button>
                 <p className="auth__question">
-                    <a className="auth__link" href="/react-mesto-auth/sign-in">Уже зарегистрированы? Войти</a>
+                    <a className="auth__link" href="/sign-in">Уже зарегистрированы? Войти</a>
                 </p>
             </form>
         </div>
