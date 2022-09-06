@@ -44,9 +44,9 @@ function App() {
     setEditAvatarPopupOpen(true);
   }
     function handleCardLike(card) {
-        // Снова проверяем, есть ли уже лайк на этой карточке
+        // Проверяем, есть ли уже лайк на этой карточке
         const isLiked = card.likes.some(i => i._id === currentUser._id);
-        // Отправляем запрос в API и получаем обновлённые данные карточки
+        // Отправляем запрос и получаем обновлённые данные карточки
         api.changeLikeCardStatus(card._id, !isLiked)
             .then((newCard) => {
             setCards((state) => state.map((c) => c._id === card._id ? newCard : c));
@@ -170,10 +170,12 @@ function App() {
             })
             .finally(() => {
                 setInfoTooltipOpen(true)
+                setIsLoading(false);
             })
     }
 
     function handleLogin(user) {
+        setIsLoading(true);
         auth
             .signIn(user.email, user.password)
             .then((data) => {
@@ -183,9 +185,11 @@ function App() {
                 history.push("/");
                 })
             .catch((err) => {
-                // запускается, если пользователь не найден
                 setInfoTooltipOpen(true);
                 console.log(err);
+            })
+            .finally(() => {
+                setIsLoading(false);
             })
     }
 
@@ -197,6 +201,7 @@ function App() {
                     if (res.data) {
                         setUserEmail(res.data.email);
                         setLoggedIn(true);
+                        history.push('/')
                     }
                 })
                 .catch(err => console.log(err));
@@ -204,17 +209,13 @@ function App() {
     }
 
     const handleSignOut = () => {
-        if(localStorage.getItem('token')) {
-            localStorage.removeItem('token')
+        if(localStorage.getItem('jwt')) {
+            localStorage.removeItem('jwt')
             setLoggedIn(false);
             setUserEmail('');
+            history.push("/sign-in");
         }
     }
-/*
-    useEffect(() => {
-        loggedIn ? history.push("/") : history.push("/sign-in")
-    }, [loggedIn]);
-*/
 
     useEffect(() => {
         tokenCheck();
@@ -224,7 +225,7 @@ function App() {
     return (
       <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-          <Header  linkTitle="Выйти" link="/sign-in" onSignOut={handleSignOut} email={userEmail} loggedIn={loggedIn}/>
+          <Header  onSignOut={handleSignOut} email={userEmail}/>
           <Switch>
               <ProtectedRoute  exact path="/"
                                loggedIn={loggedIn}
@@ -240,11 +241,11 @@ function App() {
               />
               <Route path="/sign-up">
                   <Register
-                   onRegister={handleRegister}
+                   onRegister={handleRegister} isLoading={isLoading} loadingText="Регистрация..." buttonText="Зарегистрироваться"
                   />
               </Route>
               <Route path="/sign-in">
-                  <Login  handleLogin={handleLogin} tokenCheck={tokenCheck}
+                  <Login  handleLogin={handleLogin} tokenCheck={tokenCheck} isLoading={isLoading} loadingText="Вход..." buttonText="Войти"
                   />
               </Route>
               <Route path="*">

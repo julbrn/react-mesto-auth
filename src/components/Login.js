@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-function Login({handleLogin, tokenCheck}) {
+function Login({handleLogin, tokenCheck, isLoading, loadingText, buttonText}) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -43,7 +43,7 @@ function Login({handleLogin, tokenCheck}) {
                 />
                 <p className="auth__error" id="email-error"/>
                 <button type="submit" className="auth__button">
-                    Войти
+                    {isLoading ? loadingText : buttonText}
                 </button>
             </form>
         </div>

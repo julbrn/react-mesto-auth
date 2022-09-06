@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-function Register({onRegister}) {
+function Register({onRegister, isLoading, loadingText, buttonText}) {
         const [email, setEmail] = useState("");
         const [password, setPassword] = useState("");
 
@@ -43,7 +43,7 @@ function Register({onRegister}) {
                 />
                 <p className="auth__error" id="email-error"/>
                 <button type="submit" className="auth__button">
-                    Зарегистрироваться
+                    {isLoading ? loadingText : buttonText}
                 </button>
                 <p className="auth__question">
                     <a className="auth__link" href="/react-mesto-auth/sign-in">Уже зарегистрированы? Войти</a>
