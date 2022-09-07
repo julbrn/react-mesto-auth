@@ -38,6 +38,7 @@ function Login({handleLogin, tokenCheck, isLoading, loadingText, buttonText}) {
                        name="password"
                        type="password"
                        placeholder="Пароль"
+                       autoComplete="current-password"
                        required
                        onChange={handlePasswordChange}
                 />

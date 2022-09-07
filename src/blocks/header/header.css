@@ -6,10 +6,13 @@
   box-sizing: border-box;
   display: flex;
   justify-content: space-between;
+  position: relative;
+  align-items: center;
 }
 
-@media screen and (max-width: 950px) {
-  .header {
-    padding-left: 27px;
+@media (max-width: 635px) {
+  .header{
+    align-items: unset;
+
   }
 }

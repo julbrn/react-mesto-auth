@@ -20,6 +20,7 @@ import * as auth from "../utils/auth.js";
 import InfoTooltip from "./InfoTooltip";
 import Popup from "./Popup";
 import PageNotFound from "./PageNotFound";
+import NoInternetConnection from "./NoInternetConnection"
 
 function App() {
   let history = useHistory();
@@ -39,7 +40,7 @@ function App() {
         avatar: '',
     });
   const [isLoading, setIsLoading] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   function handleEditAvatarClick() {
     setEditAvatarPopupOpen(true);
   }
@@ -71,7 +72,7 @@ function App() {
     }
   const isOpen = isEditProfilePopupOpen || isAddPlacePopupOpen || isEditAvatarPopupOpen || selectedCard || isConfirmPopupOpen || isInfoTooltipOpen;
   useEffect(() => {
-      if (loggedIn) {
+      if (isLoggedIn) {
         Promise.all([api.getUserInfo(), api.downloadInitialCards()])
             .then(([userData, cardsData]) => {
                 setCurrentUser(userData);
@@ -80,7 +81,7 @@ function App() {
             .catch((err) => {
                 console.log(err);
             });
-    }}, [loggedIn]);
+    }}, [isLoggedIn]);
 
   useEffect(() => {
       function handleEscapeClose(event) {
@@ -136,7 +137,7 @@ function App() {
                 console.log(err);
             })
             .finally(()=> {
-                setIsLoading(false)//
+                setIsLoading(false)
             })
     }
 
@@ -179,7 +180,7 @@ function App() {
         auth
             .signIn(user.email, user.password)
             .then((data) => {
-                setLoggedIn(true);
+                setIsLoggedIn(true);
                 localStorage.setItem("jwt", data.token);
                 setUserEmail(user.email);
                 history.push("/");
@@ -200,7 +201,7 @@ function App() {
                 .then((res) => {
                     if (res.data) {
                         setUserEmail(res.data.email);
-                        setLoggedIn(true);
+                        setIsLoggedIn(true);
                         history.push('/')
                     }
                 })
@@ -211,7 +212,7 @@ function App() {
     const handleSignOut = () => {
         if(localStorage.getItem('jwt')) {
             localStorage.removeItem('jwt')
-            setLoggedIn(false);
+            setIsLoggedIn(false);
             setUserEmail('');
             history.push("/sign-in");
         }
@@ -225,10 +226,20 @@ function App() {
     return (
       <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-          <Header  onSignOut={handleSignOut} email={userEmail}/>
+          <NoInternetConnection isOpen="true">
+          <Header  onSignOut={handleSignOut} email={userEmail}  isLoggedIn={isLoggedIn}/>
           <Switch>
+              <Route path="/sign-up">
+                  <Register
+                   onRegister={handleRegister} isLoading={isLoading} loadingText="Регистрация..." buttonText="Зарегистрироваться"
+                  />
+              </Route>
+              <Route path="/sign-in">
+                  <Login  handleLogin={handleLogin} tokenCheck={tokenCheck} isLoading={isLoading} loadingText="Вход..." buttonText="Войти"
+                  />
+              </Route>
               <ProtectedRoute  exact path="/"
-                               loggedIn={loggedIn}
+                               loggedIn={isLoggedIn}
                                onEditProfile={handleEditProfileClick}
                                onAddPlace={handleAddPlaceClick}
                                onEditAvatar={handleEditAvatarClick}
@@ -239,15 +250,6 @@ function App() {
                                onCardDelete={handleDeleteBtnClick}
                                component={Main}
               />
-              <Route path="/sign-up">
-                  <Register
-                   onRegister={handleRegister} isLoading={isLoading} loadingText="Регистрация..." buttonText="Зарегистрироваться"
-                  />
-              </Route>
-              <Route path="/sign-in">
-                  <Login  handleLogin={handleLogin} tokenCheck={tokenCheck} isLoading={isLoading} loadingText="Вход..." buttonText="Войти"
-                  />
-              </Route>
               <Route path="*">
                   <PageNotFound />
               </Route>
@@ -267,6 +269,7 @@ function App() {
            isSuccessful={isSuccessful}
       />
           </Popup>
+              </NoInternetConnection>
       </div>
       </CurrentUserContext.Provider>)
   }

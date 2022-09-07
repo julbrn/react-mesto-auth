@@ -38,6 +38,7 @@ function Register({onRegister, isLoading, loadingText, buttonText}) {
                        name="password"
                        type="password"
                        placeholder="Пароль"
+                       minLength={3}
                        required
                        onChange={handlePasswordChange}
                 />
