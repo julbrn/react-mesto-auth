@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import { Link, useLocation } from 'react-router-dom';
+import { useState } from "react";
+import { Route, Switch, Link, useLocation } from 'react-router-dom';
 import logo from "../images/header/logo.svg";
 
-function Header({onSignOut, email, isLoggedIn}) {
+function Header({onSignOut, email, isLoggedIn, loginLinkText, registerLinkText}) {
     const location = useLocation();
     const [isClickedBurger, setIsClickedBurger] = useState(false);
     function handleClickBurgerMenu() {
@@ -35,9 +35,15 @@ function Header({onSignOut, email, isLoggedIn}) {
                 </div>
                 </>
             ) : (
-                <Link className="header__link" to={location.pathname === '/sign-up' ? '/sign-in' : '/sign-up'}>
-                    {location.pathname === '/sign-up' ? 'Вход' : 'Регистрация'}
-                </Link>)}
+                <Switch>
+                <Route path='/sign-up'>
+                    <Link className="header__link" to='/sign-in'>{loginLinkText}</Link>
+                </Route>
+                <Route path='/sign-in'>
+                <Link className="header__link" to='/sign-up'>{registerLinkText}</Link>
+                </Route>
+                </Switch>
+            )}
         </header>
     );
 }

@@ -3,7 +3,7 @@ import Popup from "./Popup";
 import successIcon from '../images/successIcon.svg'
 import failureIcon from '../images/failureIcon.svg'
 
-function InfoTooltip({isSuccessful}) {
+function InfoTooltip({isSuccessful, failureMessage, successMessage}) {
     return (
         <>
                 <img
@@ -12,8 +12,8 @@ function InfoTooltip({isSuccessful}) {
                     alt={isSuccessful ? 'Успешная регистрация' : 'Ошибка! Попробуйте ещё раз.'}
                 />
                 <p className="popup__text">
-                    {isSuccessful ? 'Вы успешно зарегистрировались!' : 'Что-то пошло не так!' +
-                        ' Попробуйте ещё раз.'}
+                    {isSuccessful ? successMessage : failureMessage
+                    }
                 </p>
         </>
     )

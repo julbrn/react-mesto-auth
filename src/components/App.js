@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Route, Switch, Redirect, useHistory} from "react-router-dom";
 import '../index.css';
 import Header from "./Header";
@@ -96,8 +96,6 @@ function App() {
           }
       }
   }, [isOpen])
-
-
 
   function handleEditProfileClick() {setEditProfilePopupOpen(true);
   }
@@ -222,12 +220,11 @@ function App() {
         tokenCheck();
     }, []);
 
-
     return (
       <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
           <NoInternetConnection isOpen="true">
-          <Header  onSignOut={handleSignOut} email={userEmail}  isLoggedIn={isLoggedIn}/>
+          <Header  onSignOut={handleSignOut} email={userEmail}  isLoggedIn={isLoggedIn} loginLinkText="Вход" registerLinkText="Регистрация"/>
           <Switch>
               <Route path="/sign-up">
                   <Register
@@ -266,7 +263,7 @@ function App() {
           <DeleteConfirmationPopup isOpen={isConfirmPopupOpen} isLoading={isLoading} loadingText="Удаление..." onClose={closeAllPopups} onSubmit={handleCardDelete} card={card}/>
           <Popup containerModifier="auth" onClose={closeAllPopups} isOpen={isInfoTooltipOpen}>
       <InfoTooltip
-           isSuccessful={isSuccessful}
+           isSuccessful={isSuccessful} failureMessage="Что-то пошло не так! Попробуйте ещё раз." successMessage="Вы успешно зарегистрировались!"
       />
           </Popup>
               </NoInternetConnection>

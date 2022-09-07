@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
 function Register({onRegister, isLoading, loadingText, buttonText}) {
         const [email, setEmail] = useState("");
         const [password, setPassword] = useState("");
