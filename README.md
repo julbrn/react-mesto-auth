@@ -36,4 +36,4 @@
   локальном сервере по адресу http://localhost:3000;
 ---
 - [Ссылка на репозиторий на предыдущую версию проекта без авторизации](https://github.com/julbrn/mesto-react)
-- [Ссылка на проект на **GitHub Pages**](https://julbrn.github.io/mesto-react-auth/)
+- [Ссылка на проект на **GitHub Pages**](https://julbrn.github.io/react-mesto-auth/)
