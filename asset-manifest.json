@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/julbrn/react-mesto-auth/static/css/main.2d845658.css",
-    "main.js": "/julbrn/react-mesto-auth/static/js/main.31e96cfe.js",
+    "main.js": "/julbrn/react-mesto-auth/static/js/main.b3d94ac2.js",
     "static/js/787.2df4b1c8.chunk.js": "/julbrn/react-mesto-auth/static/js/787.2df4b1c8.chunk.js",
     "static/media/Travolta.gif": "/julbrn/react-mesto-auth/static/media/Travolta.99460a6393ee0557d69d.gif",
     "static/media/Inter-Medium.woff": "/julbrn/react-mesto-auth/static/media/Inter-Medium.9053572c46aeb4b16caa.woff",
@@ -23,11 +23,11 @@
     "static/media/plus.svg": "/julbrn/react-mesto-auth/static/media/plus.bed8c136e13907f5eefb.svg",
     "static/media/Close_Icon_small.svg": "/julbrn/react-mesto-auth/static/media/Close_Icon_small.b793e07c3f4c19e26c11.svg",
     "main.2d845658.css.map": "/julbrn/react-mesto-auth/static/css/main.2d845658.css.map",
-    "main.31e96cfe.js.map": "/julbrn/react-mesto-auth/static/js/main.31e96cfe.js.map",
+    "main.b3d94ac2.js.map": "/julbrn/react-mesto-auth/static/js/main.b3d94ac2.js.map",
     "787.2df4b1c8.chunk.js.map": "/julbrn/react-mesto-auth/static/js/787.2df4b1c8.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2d845658.css",
-    "static/js/main.31e96cfe.js"
+    "static/js/main.b3d94ac2.js"
   ]
 }
